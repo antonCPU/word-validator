@@ -1,4 +1,4 @@
-Word-validator
+Word Validator
 ==============
 
 EWordValidator validates that the attribute value has a specific words count and checks this value against whitelist and blacklist.

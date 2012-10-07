@@ -247,7 +247,7 @@ class EWordValidator extends CValidator
         return array(
             'max'   => '{attribute} is too long (maximum is {max} words).',
             'min'   => '{attribute} is too short (minimum is {min} words).',
-            'equal' => '{attribute} is of the wrong length (should be {exact} words).',
+            'exact' => '{attribute} is of the wrong length (should be {exact} words).',
             'blacklist' => '{attribute} should not contain words ({blacklist}).',
             'whitelist' => '{attribute} should contain at least one of the words ({whitelist}).'
         );

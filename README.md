@@ -47,6 +47,11 @@ array(/*...*/
 ),
 ~~~
 
+#### Filter (since 1.1)
+Added ability to filter data before validation.
+- **filter** - a valid php callback. Takes a model attribute as a first argument.
+- **filterClient** - a valid javascript callback.
+
 #### Example
 Check if a "body" attribute has from 2 to 5 words count, contains
 either the word "please" or "test" and does not contain a word "restricted" 

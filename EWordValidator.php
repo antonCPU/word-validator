@@ -3,7 +3,7 @@
  * EWordValidator class file.
  *
  * @author Anton Yakushin <yakushinanton@gmail.com>
- * @version 1.0
+ * @version 1.1
  * @link http://www.yiiframework.com/extension/
  * @license BSD
  */
@@ -39,44 +39,40 @@
  * ),
  * </code>
  * @author Anton Yakushin <yakushinanton@gmail.com>
- * @version 1.1
  */
 class EWordValidator extends CValidator
 {
     /**
-     * Maximum word count 
-     * @var int 
+     * @var int maximum number of words. 
      */
     public $max;
     /**
-     * Minimum word count 
-     * @var int 
+     * @var int minimum number of words.
      */
     public $min;
     /**
-     * Exact word count 
-     * @var int
+     * @var int only this number of words.
      */
     public $exact;
     /**
-     * List of words/expressions that should not be inside the value
+     * List of words/expressions that should not be inside the value.
      * Regular expressions are allowed.
      * @var array 
      */
     public $blacklist;
     /**
-     * At least one of these words/expressions should be inside the value
+     * At least one of these words/expressions should be inside the value.
      * Regular expressions are allowed.
      * @var array
      */
     public $whitelist;
     /**
-     * List of error messages
+     * List of error messages.
      * A key is an available validatation rule and a value is a message with 
      * placeholders. All messages support {attribute} and {length} placeholders.
      * Also each method adds a correspond value to a message.
      * @var array
-     * @see EWordValidator::getDefaultMessages
+     * @see EWordValidator::getDefaultMessages()
      */
     public $messages;
     /**
@@ -87,13 +83,13 @@ class EWordValidator extends CValidator
     /**
      * Filter for data that is applied before any of rules.
      * Accepts data as a first argument.
-     * @var mixed a valid php callback
+     * @var mixed a valid php callback.
      * @since 1.1
      */
     public $filter;
     /**
      * Filter for client side value.
-     * @var string javascript callback
+     * @var string javascript callback.
      * @since 1.1
      */
     public $filterClient;
@@ -115,12 +111,13 @@ class EWordValidator extends CValidator
         $this->_object    = $object;
         $this->_attribute = $attribute;
 
-        foreach ($this->getRules() as $rule)
+        foreach ($this->getRules() as $rule) {
             $this->checkRule($rule);
+        }
     }
     
     /**
-     * Gets a list of available rules 
+     * Gets a list of available rules. 
      * @return array 
      */
     protected function getRules()
@@ -129,19 +126,20 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Gets the value words count
+     * Gets a number of words in the value.
      * @return int 
+     * @since 1.1 is public
      */
     public function getLength()
     {
-        if (null === $this->_length)
+        if (null === $this->_length) {
             $this->_length = str_word_count($this->getSource());
-        
+        }
         return $this->_length;
     }
     
     /**
-     * Gets the value
+     * Gets the value.
      * @return string
      */
     protected function getSource()
@@ -156,16 +154,17 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Checks rule if needed and adds an error message
+     * Checks rule if needed and adds an error message.
      * @param string $rule 
      */
     protected function checkRule($rule)
     {  
-        if ((null === $this->$rule) || !$this->getLength())
+        if ((null === $this->$rule) || !$this->getLength()) {
             return;
-        
-        if (!$this->{'check' . ucfirst($rule)}())
+        }
+        if (!$this->{'check' . ucfirst($rule)}()) {
             $this->addErrorMessage($rule);
+        }
     }
     
     /**
@@ -230,7 +229,7 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Forms a value compatible with one parameter for EWordValidator::addError
+     * Forms a value compatible with one parameter for EWordValidator::addError().
      * @param mixed $value
      * @return string 
      */
@@ -240,23 +239,23 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Gets an error message
+     * Gets an error message.
      * @param string $rule
      * @return string
      */
     protected function getMessage($rule)
     { 
-        if (isset($this->messages[$rule]))
+        if (isset($this->messages[$rule])) {
             return $this->messages[$rule];
-        elseif (isset($this->message))
+        } elseif (isset($this->message)) {
             return $this->message;
-        
+        }
         $messages = $this->getDefaultMessages();
         return $messages[$rule];
     }
     
     /**
-     * Gets a list of default error messages
+     * Gets a list of default error messages.
      * @return array 
      */
     protected function getDefaultMessages()
@@ -283,9 +282,9 @@ class EWordValidator extends CValidator
         $this->_attribute = $attribute;
         
         $validation = 'var wordCount=' . $this->calcClientLength() . ';';
-        foreach ($this->getRules() as $rule)
+        foreach ($this->getRules() as $rule) {
             $validation .= $this->checkClientRule($rule);
-        
+        }
         return $validation;
     }
     
@@ -301,15 +300,15 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Forms a block for one validation rule
+     * Forms a block for one validation rule.
      * @param string $rule
      * @return string 
      */
     protected function checkClientRule($rule)
     {  
-         if (!$this->$rule)
-                return;
-            
+        if (!$this->$rule) {
+            return;
+        }
         $method = 'checkClient' . ucfirst($rule);
         return ' if (!(' . $this->{$method}() . ') && wordCount) 
             {
@@ -368,7 +367,7 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Calculates words count
+     * Calculates number of words.
      * @return string 
      */
     protected function calcClientLength()
@@ -378,7 +377,7 @@ class EWordValidator extends CValidator
     }
     
     /**
-     * Gets value
+     * Gets the value.
      * @return string
      * @since 1.1
      */

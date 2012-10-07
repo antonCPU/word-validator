@@ -152,6 +152,114 @@ class EWordValidatorTest extends CTestCase
         $this->assertEquals('Wrong Foo length. Now it\'s 2, but should be 3 words.', 
             $this->model->getError('foo'));
     }
+    
+    public function testInRange()
+    {
+        $this->validator->min = 1;
+        $this->validator->max = 3;
+        $this->validator->validate($this->model);
+        $this->assertFalse($this->model->hasErrors());
+    }
+    
+    public function testNotInRange()
+    {
+        $this->validator->min = 3;
+        $this->validator->max = 5;
+        $this->validator->validate($this->model);
+        $this->assertTrue($this->model->hasErrors());
+    }
+    
+    public function testBlacklistPass()
+    {
+        $this->validator->blacklist = array('some', 'word');
+        $this->validator->validate($this->model);
+        $this->assertFalse($this->model->hasErrors());
+    }
+    
+    public function testBlacklistNotPass()
+    {
+        $this->validator->blacklist = array('test', 'word');
+        $this->validator->validate($this->model);
+        $this->assertTrue($this->model->hasErrors());
+    }
+    
+    public function testBlacklistRegExp()
+    {
+        $this->validator->blacklist = array('word', 't*');
+        $this->validator->validate($this->model);
+        $this->assertTrue($this->model->hasErrors());
+    }
+    
+    public function testBlacklistMessage()
+    {
+        $this->validator->blacklist = array('test', 'word');
+        $this->validator->validate($this->model);
+        $this->assertEquals('Foo should not contain words (test, word).', $this->model->getError('foo'));
+    }
+    
+    public function testBlacklistCustomMessage()
+    {
+        $this->validator->blacklist = array('test', 'word');
+        $this->validator->messages = array(
+          'blacklist' => 'Wrong {attribute}. Should not be in list ({blacklist}).'  
+        );
+        $this->validator->validate($this->model);
+        $this->assertEquals('Wrong Foo. Should not be in list (test, word).', $this->model->getError('foo'));
+    }
+    
+    public function testBlacklistMessageClue()
+    {
+        $this->validator->blacklist = array('test', 'word');
+        $this->validator->clue = '|';
+        $this->validator->validate($this->model);
+        $this->assertEquals('Foo should not contain words (test|word).', $this->model->getError('foo'));
+    }
+    
+    public function testWhitelistPass()
+    {
+        $this->validator->whitelist = array('some', 'test');
+        $this->validator->validate($this->model);
+        $this->assertFalse($this->model->hasErrors());
+    }
+    
+    public function testWhitelistNotPass()
+    {
+        $this->validator->whitelist = array('some', 'word');
+        $this->validator->validate($this->model);
+        $this->assertTrue($this->model->hasErrors());
+    }
+    
+    public function testWhitelistRegExp()
+    {
+        $this->validator->whitelist = array('word', 't*');
+        $this->validator->validate($this->model);
+        $this->assertFalse($this->model->hasErrors());
+    }
+    
+    public function testWhitelistMessage()
+    {
+        $this->validator->whitelist = array('some', 'word');
+        $this->validator->validate($this->model);
+        $this->assertEquals('Foo should contain at least one of the words (some, word).', $this->model->getError('foo'));
+    }
+    
+    public function testWhitelistCustomMessage()
+    {
+        $this->validator->whitelist = array('some', 'word');
+        $this->validator->messages = array(
+          'whitelist' => 'Wrong {attribute}. Should be in list ({whitelist}).'  
+        );
+        $this->validator->validate($this->model);
+        $this->assertEquals('Wrong Foo. Should be in list (some, word).', $this->model->getError('foo'));
+    }
+    
+    public function testWhitelistMessageClue()
+    {
+        $this->validator->whitelist = array('some', 'word');
+        $this->validator->clue = '|';
+        $this->validator->validate($this->model);
+        $this->assertEquals('Foo should contain at least one of the words (some|word).', $this->model->getError('foo'));
+    }
 }
 
 class FormModel extends CFormModel

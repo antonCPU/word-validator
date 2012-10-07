@@ -83,6 +83,17 @@ class EWordValidator extends CValidator
      * @var string 
      */
     public $clue = ', ';
+    /**
+     * Filter for data that is applied before any of rules.
+     * Accepts data as a first argument.
+     * @var mixed a valid php callback
+     */
+    public $filter;
+    /**
+     * Filter for client side value.
+     * @var string javascript callback
+     */
+    public $filterClient;
     
     private $_source;
     private $_length;
@@ -132,9 +143,12 @@ class EWordValidator extends CValidator
      */
     protected function getSource()
     { 
-        if (null === $this->_source)
+        if (null === $this->_source) {
             $this->_source = $this->_object->{$this->_attribute};
-        
+            if ($this->filter && is_callable($this->filter)) {
+                $this->_source = call_user_func($this->filter, $this->_source);
+            }
+        }
         return $this->_source;
     }
     
@@ -347,7 +361,7 @@ class EWordValidator extends CValidator
      */
     protected function checkClientList($list)
     {
-        return 'value.match(/\b((' . implode(')|(', $list) . '))\b/i)';
+        return $this->getClientSource() . '.match(/\b((' . implode(')|(', $list) . '))\b/i)';
     }
     
     /**
@@ -356,7 +370,16 @@ class EWordValidator extends CValidator
      */
     protected function calcClientLength()
     {
-        return '(wordCount = jQuery.trim(value.replace(/\s+/g," "))) ? 
-            wordCount.split(" ").length : 0';
+        return '(wordCount = jQuery.trim(' . $this->getClientSource() . '.replace(/\s+/g," "))) 
+            ? wordCount.split(" ").length : 0';
+    }
+    
+    /**
+     * Gets value
+     * @return string
+     */
+    protected function getClientSource()
+    {
+        return $this->filterClient ? $this->filterClient . '(value)' : 'value';
     }
 }

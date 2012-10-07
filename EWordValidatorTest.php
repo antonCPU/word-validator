@@ -287,9 +287,30 @@ class EWordValidatorTest extends CTestCase
         $this->validator->validate($this->model);
         $this->assertEquals('Foo should contain at least one of the words (some|word).', $this->model->getError('foo'));
     }
+    
+    public function testExternalFilter()
+    {
+        $this->model->foo = '<span> test message </span>';
+        $this->validator->filter = array($this->model, 'filterTags');
+        $this->validator->validate($this->model);
+        $this->assertEquals(2, $this->validator->getLength());
+    }
+    
+    public function testInlineFilter()
+    {
+        $this->model->foo = '<span> test message </span>';
+        $this->validator->filter = function ($source) { return strip_tags($source); };
+        $this->validator->validate($this->model);
+        $this->assertEquals(2, $this->validator->getLength());
+    }
 }
 
 class FormModel extends CFormModel
 {
     public $foo;
+    
+    public function filterTags($source)
+    {
+        return strip_tags($source);
+    }
 }

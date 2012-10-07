@@ -39,6 +39,7 @@
  * ),
  * </code>
  * @author Anton Yakushin <yakushinanton@gmail.com>
+ * @version 1.1
  */
 class EWordValidator extends CValidator
 {
@@ -87,11 +88,13 @@ class EWordValidator extends CValidator
      * Filter for data that is applied before any of rules.
      * Accepts data as a first argument.
      * @var mixed a valid php callback
+     * @since 1.1
      */
     public $filter;
     /**
      * Filter for client side value.
      * @var string javascript callback
+     * @since 1.1
      */
     public $filterClient;
     
@@ -377,6 +380,7 @@ class EWordValidator extends CValidator
     /**
      * Gets value
      * @return string
+     * @since 1.1
      */
     protected function getClientSource()
     {

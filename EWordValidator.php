@@ -118,7 +118,7 @@ class EWordValidator extends CValidator
      * Gets the value words count
      * @return int 
      */
-    protected function getLength()
+    public function getLength()
     {
         if (null === $this->_length)
             $this->_length = str_word_count($this->getSource());

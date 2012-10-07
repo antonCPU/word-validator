@@ -15,6 +15,33 @@ class EWordValidatorTest extends CTestCase
         $this->model->foo = 'test message';
     }
     
+    /**
+     * @dataProvider provider
+     */
+    public function testWordsCount($text, $wordsCount)
+    {
+        $this->model->foo = $text;
+        $this->validator->validate($this->model);
+        $this->assertEquals($wordsCount, $this->validator->getLength());
+    }
+    
+    public function provider()
+    {
+        return array(//text, words count
+            array('', 0),
+            array('test message',       2),
+            array(' test message',      2),
+            array(' test    message ',  2),
+            array('test, message',      2),
+            array('test,message',       2),
+            array('!@#$%^&*()~',        0),
+            array('test/message',       2),
+            array('test-message',       1),
+            array('test-message message',    2),
+            array('test' . "\n" . 'message', 2),
+        );
+    }
+    
     public function testMinMoreThanLength()
     {
         $this->validator->min = 3;
